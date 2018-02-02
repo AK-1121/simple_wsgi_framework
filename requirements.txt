@@ -1,3 +1,1 @@
-nltk==3.2.5
-ujson==1.35
-click==6.7
+uWSGI==2.0.15
