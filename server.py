@@ -14,9 +14,9 @@ class App:
         # query_string = environ.get('QUERY_STRING')  # Example: 'a=1&b=128'
         path_info = environ.get('PATH_INFO')
         if not path_info.endswith('/'):
-            path_info += '/'
-        current_method = environ.get('REQUEST_METHOD')  # GET or POST
+            return self.redirect_without_slash_handler, dict()
 
+        current_method = environ.get('REQUEST_METHOD')  # GET or POST
         current_url_handler, url_params = None, None
         allowed_methods = ["GET"]
         for url_regexp, (handler, methods) in self.handlers.items():
@@ -63,6 +63,12 @@ class App:
     @staticmethod
     def not_allowed_handler(environ, url_params):
         return "Method not allowed ", 405, {'X_not_allowed_header': ":("}
+
+    @staticmethod
+    def redirect_without_slash_handler(environ, url_params):
+        url = environ.get('PATH_INFO', '/')
+        url_with_slash = url + '/'
+        return "You are redirecting to correct page", 301, {"Location": url_with_slash}
 
     def register_handler(self, url, methods=None):
         methods = methods or ['GET']
